@@ -71,13 +71,13 @@ type: custom:lunar-info-card
 entity: sensor.lunar_date
 customize: true
 fields:
-  农历: "${states['sensor.lunar_date'].state}"
-  年干支: "${states['sensor.lunar_year'].state}"
-  月干支: "${states['sensor.lunar_month'].state}"
-  日干支: "${states['sensor.lunar_day'].state}"
-  星期: "${states['sensor.week_day'].state}"
-  宜: "${states['sensor.yi'].state}"
-  忌: "${states['sensor.ji'].state}"
+  农历: '[[[ return states["sensor.lunar_date"].state ]]]'
+  年干支: '[[[ return states["sensor.lunar_year"].state ]]]'
+  月干支: '[[[ return states["sensor.lunar_month"].state ]]]'
+  日干支: '[[[ return states["sensor.lunar_day"].state ]]]'
+  星期: '[[[ return states["sensor.week_day"].state ]]]'
+  宜: '[[[ return states["sensor.yi"].state ]]]'
+  忌: '[[[ return states['${entity}'].attributes.lunar?.忌 || '' ]]]'
   ...
 ```
 
