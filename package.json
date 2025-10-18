@@ -1,14 +1,13 @@
 {
   "name": "lunar-info-card",
-  "version": "0.0.2-lit",
+  "version": "v0.0.2-lit",
   "type": "module",
   "scripts": {
     "build": "vite build"
   },
   "devDependencies": {
-    "vite": "^5.0.0"
-  },
-  "dependencies": {
-    "lit": "^3.3.1"
+    "lit": "^3.3.1",
+    "vite": "^7.1.10",
+    "terser": "^5.44.0"
   }
 }
