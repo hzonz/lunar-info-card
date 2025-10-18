@@ -1,5 +1,5 @@
+// lunar-info-card.js
 import { LitElement, html, css } from "lit";
-import { state, query } from "lit/decorators.js";
 import { evalTemplate, DEFAULT_FIELDS } from "./lunar-utils.js";
 
 const LUNAR_CARD_VERSION = "v0.0.2-lit";
@@ -13,7 +13,7 @@ export class LunarInfoCard extends LitElement {
   static properties = {
     hass: {},
     config: {},
-    _data: {} // 用 _data 保存状态
+    _data: {} // 保存解析后的数据
   };
 
   constructor() {
