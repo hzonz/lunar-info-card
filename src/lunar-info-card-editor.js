@@ -1,16 +1,10 @@
 import { LitElement, html } from "lit";
+import { state } from "lit/decorators.js";
 import { DEFAULT_FIELDS } from "./lunar-utils.js";
 
 export class LunarInfoCardEditor extends LitElement {
-  static properties = {
-    hass: {},
-    _config: {}
-  };
-
-  constructor() {
-    super();
-    this._config = {};
-  }
+  static properties = { hass: {}, _config: {} };
+  @state() _config = {};
 
   setConfig(config) {
     this._config = { customize: false, ...config };
@@ -51,13 +45,7 @@ export class LunarInfoCardEditor extends LitElement {
         .hass=${this.hass}
         .data=${this._config}
         .schema=${schema}
-        .computeLabel=${(s) =>
-          s.name === "entity"
-            ? "选择实体"
-            : s.name === "customize"
-            ? "开启自定义模板"
-            : s.name
-        }
+        .computeLabel=${(s) => (s.name === "entity" ? "选择实体" : s.name === "customize" ? "开启自定义模板" : s.name)}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
