@@ -1,10 +1,16 @@
 import { LitElement, html } from "lit";
-import { state } from "lit/decorators.js";
 import { DEFAULT_FIELDS } from "./lunar-utils.js";
 
 export class LunarInfoCardEditor extends LitElement {
-  static properties = { hass: {}, _config: {} };
-  @state() _config = {};
+  static properties = {
+    hass: {},
+    _config: {}, // 保存卡片配置
+  };
+
+  constructor() {
+    super();
+    this._config = {};
+  }
 
   setConfig(config) {
     this._config = { customize: false, ...config };
@@ -20,17 +26,21 @@ export class LunarInfoCardEditor extends LitElement {
       delete newConfig.fields;
     }
     this._config = newConfig;
-    this.dispatchEvent(new CustomEvent("config-changed", { detail: { config: this._config } }));
+    this.dispatchEvent(
+      new CustomEvent("config-changed", { detail: { config: this._config } })
+    );
   }
 
   render() {
     if (!this.hass) return html``;
 
     const fieldKeys = Object.keys(DEFAULT_FIELDS);
+
     const schema = [
       { name: "entity", selector: { entity: {} } },
       { name: "customize", selector: { boolean: {} } },
     ];
+
     if (this._config?.customize) {
       schema.push({
         name: "fields",
@@ -45,7 +55,11 @@ export class LunarInfoCardEditor extends LitElement {
         .hass=${this.hass}
         .data=${this._config}
         .schema=${schema}
-        .computeLabel=${(s) => (s.name === "entity" ? "选择实体" : s.name === "customize" ? "开启自定义模板" : s.name)}
+        .computeLabel=${(s) => {
+          if (s.name === "entity") return "选择实体";
+          if (s.name === "customize") return "开启自定义模板";
+          return s.name;
+        }}
         @value-changed=${this._valueChanged}
       ></ha-form>
     `;
