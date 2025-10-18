@@ -14,32 +14,26 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout 仓库
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # 2️⃣ 设置 Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: '20'
 
-      # 3️⃣ 安装依赖
       - name: Install dependencies
         run: npm install
 
-      # 4️⃣ Build Lunar Info Card
       - name: Build Lunar Info Card
         run: npm run build
 
-      # 5️⃣ 提取版本号
       - name: Extract version
         id: get_version
         run: echo "version=$(jq -r .version package.json)" >> $GITHUB_OUTPUT
 
-      # 6️⃣ 检查 tag 是否已存在
       - name: Check if tag exists
         id: check_tag
         run: |
@@ -48,7 +42,6 @@ jobs:
             exit 1
           fi
 
-      # 7️⃣ 创建 Git tag
       - name: Create tag
         uses: actions/github-script@v7
         with:
@@ -60,7 +53,6 @@ jobs:
               sha: context.sha
             })
 
-      # 8️⃣ 创建 draft release 并附加打包文件
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
