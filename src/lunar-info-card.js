@@ -13,9 +13,13 @@ export class LunarInfoCard extends LitElement {
   static properties = {
     hass: {},
     config: {},
+    _data: {} // 用 _data 保存状态
   };
 
-  @state() _data = {};
+  constructor() {
+    super();
+    this._data = {}; // 初始化
+  }
 
   static styles = css`
     :host { display:block; height:100%; }
