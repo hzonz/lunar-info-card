@@ -11,5 +11,8 @@ export default defineConfig({
     outDir: ".", 
     emptyOutDir: false,
     minify: "terser",
+    terserOptions: {
+      compress: { drop_console: true }
+    }
   },
 });
