@@ -10,7 +10,7 @@
 
 ## 🚀 特性
 
-- ✅ hhh-农历 `node-red` 流程专用卡片。  
+- ✅ [天元农历](https://github.com/hzonz/tianyuan_lunar)集成专用卡片。  
 - 🧩 支持自定义编辑数据来源，理论支持所有农历实体。  
 - ⚙️ 支持 Lovelace 编辑界面可视化配置。
 - 🧱 支持 JS 模板语法（[[[ ... ]]]），灵活自定义每个字段内容  
@@ -62,7 +62,7 @@ resources:
 ### 最小添加
 ```yaml
 type: custom:lunar-info-card
-entity: sensor.nong_li  #默认
+entity: sensor.tianyuan_calendar_main_lunar  #默认
 ```
 
 ### 自定义添加
