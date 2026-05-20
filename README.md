@@ -6,7 +6,7 @@
 
 ---
 
-![lunar-info-card](<img width="466" height="522" alt="lunar-info-card" src="https://github.com/user-attachments/assets/93c286de-a020-4592-9631-c40198f4b873" />
+![lunar-info-card](<img width="466" height="522" alt="lunar-info-card" src="https://github.com/user-attachments/assets/7db298c0-1c61-4504-9eb9-63339ce77544" />
 )
 
 ## 🚀 特性
