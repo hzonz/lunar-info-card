@@ -6,7 +6,7 @@
 
 ---
 
-![lunar-info-card](https://github.com/user-attachments/assets/8fe87933-428f-4829-90ca-4549e09a061d)
+![lunar-info-card](./lunar-info-card.jpeg)
 
 ## 🚀 特性
 
@@ -72,9 +72,7 @@ entity: sensor.lunar_date
 customize: true
 fields:
   农历: '[[[ return states["sensor.lunar_date"].state ]]]'
-  年干支: '[[[ return states["sensor.lunar_year"].state ]]]'
-  月干支: '[[[ return states["sensor.lunar_month"].state ]]]'
-  日干支: '[[[ return states["sensor.lunar_day"].state ]]]'
+  天干地支: '[[[ return states["sensor.lunar_year"].state ]]]'
   星期: '[[[ return states["sensor.week_day"].state ]]]'
   宜: '[[[ return states["sensor.yi"].state ]]]'
   忌: '[[[ return states['${entity}'].attributes.lunar?.忌 || '' ]]]'
