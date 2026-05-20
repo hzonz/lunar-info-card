@@ -9,7 +9,7 @@ export default defineConfig({
       fileName: () => "lunar-info-card.js",
     },
     outDir: "dist", 
-    emptyOutDir: false,
+    emptyOutDir: true,
     minify: "terser",
     terserOptions: {
       compress: { 
