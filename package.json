@@ -1,7 +1,9 @@
 {
   "name": "lunar-info-card",
-  "version": "v0.0.3-lit",
+  "version": "0.0.3-lit", 
   "type": "module",
+  "main": "lunar-info-card.js",
+  "module": "lunar-info-card.js",
   "scripts": {
     "build": "vite build"
   },
