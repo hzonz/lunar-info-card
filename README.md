@@ -6,7 +6,7 @@
 
 ---
 
-![lunar-info-card](./lunar_info_card.jpeg)
+![lunar-info-card](./lunar-info-card.jpeg)
 
 ## 🚀 特性
 
