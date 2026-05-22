@@ -233,7 +233,7 @@ class LunarInfoCard extends LitElement {
   }
 
   getGridOptions() { return { rows: 8, columns: 12 }; }
-  static getStubConfig() { return { entity: "sensor.tianyuan_lunar_main_lunar" }; }
+  static getStubConfig() { return { entity: "sensor.tianyuan_nong_li_main_lunar" }; }
   static async getConfigElement() { return document.createElement("lunar-info-card-editor"); }
 }
 
