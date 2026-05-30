@@ -3,7 +3,7 @@ import { LitElement, html, css } from "lit";
 // import { LitElement, html, css } from "https://unpkg.com/lit@3.3.1/index.js?module";
 
 // 主卡片：Lunar Info Card
-const LUNAR_CARD_VERSION = "v0.0.3-lit";
+const LUNAR_CARD_VERSION = "v0.0.4-lit";
 
 console.log(
   `%cLunar Info Card ${LUNAR_CARD_VERSION} Fixed`,
@@ -233,7 +233,7 @@ class LunarInfoCard extends LitElement {
   }
 
   getGridOptions() { return { rows: 8, columns: 12 }; }
-  static getStubConfig() { return { entity: "sensor.tianyuan_lunar_main_lunar" }; }
+  static getStubConfig() { return { entity: "sensor.tianyuan_nong_li_lunar_calendar" }; }
   static async getConfigElement() { return document.createElement("lunar-info-card-editor"); }
 }
 
