@@ -61,7 +61,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 'lts/*'
-          cache: 'npm'
+          cache: 'none'
 
       - name: Install dependencies
         if: steps.check_version.outputs.changed == 'true'
