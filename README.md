@@ -62,7 +62,7 @@ resources:
 ### 最小添加
 ```yaml
 type: custom:lunar-info-card
-entity: sensor.tianyuan_calendar_main_lunar  #默认
+entity: sensor.tianyuan_nong_li_lunar_calendar  #默认
 ```
 
 ### 自定义添加
