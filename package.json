@@ -1,6 +1,6 @@
 {
   "name": "lunar-info-card",
-  "version": "0.0.3-lit", 
+  "version": "0.0.4-lit", 
   "type": "module",
   "main": "lunar-info-card.js",
   "module": "lunar-info-card.js",
