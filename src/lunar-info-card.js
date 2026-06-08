@@ -3,7 +3,7 @@ import { LitElement, html, css } from "lit";
 // import { LitElement, html, css } from "https://unpkg.com/lit@3.3.1/index.js?module";
 
 // 主卡片：Lunar Info Card
-const LUNAR_CARD_VERSION = "v0.0.4-lit";
+const LUNAR_CARD_VERSION = "v0.0.5-lit";
 
 console.log(
   `%cLunar Info Card ${LUNAR_CARD_VERSION} Fixed`,
@@ -23,218 +23,286 @@ class LunarInfoCard extends LitElement {
 
   static styles = css`
     :host {
-      display: block; 
+      display: block;
       height: 100%;
-      --lunar-font-size: clamp(1.8em, 2.1em, 2.5em);
-      --lunar-lunar-size: clamp(0.9em, 1.1em, 1.2em);
-      --lunar-title-size: clamp(0.85em, 1.1em, 1.3em);
-      --lunar-label-size: clamp(0.85rem, 1.1em, 1.3rem);
+      /* 开启容器查询，让卡片根据自身宽度缩放字体 */
+      container-type: inline-size;
     }
+
     ha-card {
+      height: 100%;
       padding: 12px;
       box-sizing: border-box;
-      height: 100%;
+      background-color: var(--card-background-color, #fff);
+      color: var(--primary-text-color, #212121);
       display: flex;
       flex-direction: column;
-      background-color: var(--card-background-color);
-      color: var(--primary-text-color);
     }
+
+    /* 核心布局引擎：命名网格区域 */
     .card-container {
       display: grid;
-      grid-template-areas:
-        "a b b b"
-        "a c c c"
-        "a d d d"
-        "a e f g"
-        "h h h h"
-        "i i i i"
-        "j j j j"
-        "k k k k";
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: repeat(4, 1.5fr) repeat(4, 1fr);
+      flex: 1;
       gap: 4px;
-      height: 100%;
-    }
-    
-    .lunar { grid-area: a; display: grid; grid-template-areas: "n l"; grid-template-columns: 1fr 2fr; }
-    .lunar .name { 
-      writing-mode: vertical-lr; 
-      font-weight: bold; 
-      font-size: var(--lunar-font-size); 
-      letter-spacing: 0.3em; 
-      color: var(--primary-color);
-      align-self: center;
-      justify-self: center;
-    }
-    .lunar .label { 
-      writing-mode: vertical-lr; 
-      font-size: var(--lunar-lunar-size); 
-      letter-spacing: 0.2em; 
-      align-self: center;
-      justify-self: center;
-      line-height: 1.2;
+      min-height: 0;
+      grid-template-columns: repeat(4, 1fr);
+      /* 前四行 1.5倍高度，后四行 1倍高度 */
+      grid-template-rows: repeat(4, 1.5fr) repeat(4, 1fr);
+      grid-template-areas:
+        "lunar wuxing    wuxing    wuxing"
+        "lunar chongsha   chongsha   chongsha"
+        "lunar pengzu     pengzu     pengzu"
+        "lunar xishen     fushen     caishen"
+        "yi    yi         yi         yi"
+        "ji    ji         ji         ji"
+        "jishen jishen    jishen     jishen"
+        "xiongsha xiongsha xiongsha   xiongsha";
     }
 
-    .grid-a { display: grid; grid-template-areas: "n l"; grid-template-columns: 1fr 2fr; align-items: center; }
-    .grid-b { display: grid; align-self: center; justify-items: start; grid-template-areas: "n" "l"; }
-    
-    /* 重点修正：layout c 容器（宜忌吉凶） */
-    .grid-c { 
-      display: grid; 
-      grid-template-areas: "n l"; 
-      grid-template-columns: 50px 1fr; 
+    /* --- 区域 A: 左侧纵向农历 --- */
+    .section-lunar {
+      grid-area: lunar;
+      display: grid;
+      grid-template-columns: 1fr 2fr;
       align-items: center;
-      min-height: 0; /* 防止内容撑开容器 */
+      justify-items: center;
+      border-inline-end: 1px solid var(--divider-color, rgba(0,0,0,0.1));
+      border-block-end: 1px solid var(--divider-color, rgba(0,0,0,0.1));
+      padding-inline-end: 4px;
     }
 
-    .grid-b .label { font-size: var(--lunar-label-size); justify-self: center; }
-    
-    .name { 
-      font-weight: bold; 
-      font-size: var(--lunar-title-size); 
-      justify-self: center; 
-      align-self: center; 
+    .section-lunar .name {
+      writing-mode: vertical-lr;
+      font-weight: 900;
+      font-size: clamp(1.4em, 10cqw, 2em);
+      letter-spacing: 0.2em;
+      color: var(--primary-color);
     }
-    
-    .label { 
-      font-size: var(--lunar-label-size); 
-      align-self: center; 
+    .section-lunar .label {
+      writing-mode: vertical-lr;
+      font-size: clamp(0.85em, 5cqw, 1.1em);
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      font-weight: 400;
+    }
+
+    /* --- 布局模式 --- */
+    /* 我们通过选择对应的 grid-area 来添加样式 */
+    [style*="grid-area: xishen"],
+    [style*="grid-area: fushen"],
+    [style*="grid-area: caishen"] {
+      border-block-start: 1px solid var(--divider-color, rgba(0,0,0,0.1)); /* 上分割线 */
+      border-block-end: 1px solid var(--divider-color, rgba(0,0,0,0.1));   /* 下分割线 */
+      height: 100%;
+      box-sizing: border-box;
+    }
+
+    /* 基础单元格：居中对齐 */
+    .cell {
+      display: grid;
+      align-items: center;
+      min-width: 0;
+    }
+
+    /* 横向两列布局 (用于顶部三行) */
+    .layout-row {
+      grid-template-columns: 1fr 2fr;
+      align-items: center;
+    }
+
+    /* 纵向堆叠布局 (用于三个神位) */
+    .layout-stack {
+      grid-template-rows: auto auto;
+      justify-items: center;
+      text-align: center;
+      padding-block: 4px;
+    }
+
+    /* 底部条状布局 (宜忌吉凶) */
+    .layout-bar {
+      grid-template-columns: 50px 1fr;
+      gap: 8px;
+    }
+
+    /* --- 元素样式 --- */
+    .title {
+      font-weight: bold;
+      font-size: clamp(0.85rem, 4.5cqw, 1.2rem);
+      justify-self: center;
+    }
+
+    /* 单行截断样式 */
+    .content-single {
+      font-size: clamp(0.8rem, 4cqw, 1.05rem);
       font-weight: 300;
-      overflow: hidden; 
-      text-overflow: ellipsis; 
-      white-space: nowrap; /* 普通单行内容不换行 */
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    /* 重点修正：自动换行逻辑 */
-    .label-block {
-      font-size: var(--lunar-label-size);
-      align-self: center;
+    /* 多行换行样式 (核心优化) */
+    .content-wrap {
+      font-size: clamp(0.8rem, 4cqw, 1.05rem);
       font-weight: 300;
       line-height: 1.3;
-      white-space: normal;   /* 允许换行 */
-      word-break: break-all; /* 强制在单词内断行，适合显示大量神煞文字 */
-      overflow: hidden;
+      white-space: normal;
+      word-break: break-all;
       display: -webkit-box;
       -webkit-box-orient: vertical;
-      -webkit-line-clamp: 2; /* 限制最大显示2行，防止撑破卡片。如果想显示全部，可以设为更高或删除此行 */
+      -webkit-line-clamp: 2; /* 限制2行，防止破坏整体高度 */
+      overflow: hidden;
     }
 
-    .circle { 
-      width: 1.8em; 
-      height: 1.8em; 
-      border-radius: 50%; 
+    /* 宜忌圆圈：Flexbox 绝对居中 */
+    .circle {
+      width: 1.8em;
+      height: 1.8em;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      justify-self: center; 
-      align-self: center; 
-      color: #fff; 
-      font-size: 1.1em; 
+      color: #fff;
       font-weight: bold;
-      line-height: 1;
+      font-size: 1.1em;
+      justify-self: center;
       flex-shrink: 0;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .circle.green { background-color: var(--success-color, #4caf50); }
-    .circle.red { background-color: var(--error-color, #f44336); }
+
+    .bg-green { background-color: var(--success-color, #4caf50); }
+    .bg-red { background-color: var(--error-color, #f44336); }
+
+    /* 适配极窄屏幕 */
+    @container (max-width: 280px) {
+      ha-card { padding: 6px; }
+      .card-container { gap: 2px; }
+      .layout-bar { grid-template-columns: 40px 1fr; gap: 4px; }
+    }
   `;
 
-  setConfig(config) {
-    if (!config.entity) throw new Error("请设置 entity");
-    this.config = { ...config };
-    this._templateCache.clear();
-  }
-
-  static defaultFields() {
-    return {
-      农历: `[[[ return states['\${entity}'].state ]]]`,
-      天干地支: `[[[ return states['\${entity}'].attributes.lunar?.['天干地支'] || ''; ]]]`,
-      星期: `[[[ return states['\${entity}'].attributes.lunar?.星期 || ''; ]]]`,
-      建除日: `[[[ return states['\${entity}'].attributes.lunar?.建除日 || ''; ]]]`,
-      冲煞: `[[[ return states['\${entity}'].attributes.lunar?.冲煞 || ''; ]]]`,
-      彭祖干: `[[[ return states['\${entity}'].attributes.lunar?.['彭祖干'] || ''; ]]]`,
-      彭祖支: `[[[ return states['\${entity}'].attributes.lunar?.['彭祖支'] || ''; ]]]`,
-      喜神: `[[[ return states['\${entity}'].attributes.lunar?.吉神方位?.喜神 || ''; ]]]`,
-      福神: `[[[ return states['\${entity}'].attributes.lunar?.吉神方位?.福神 || ''; ]]]`,
-      财神: `[[[ return states['\${entity}'].attributes.lunar?.吉神方位?.财神 || ''; ]]]`,
-      宜: `[[[ return states['\${entity}'].attributes.lunar?.宜 || ''; ]]]`,
-      忌: `[[[ return states['\${entity}'].attributes.lunar?.忌 || ''; ]]]`,
-      吉神: `[[[ return states['\${entity}'].attributes.lunar?.吉神 || ''; ]]]`,
-      凶煞: `[[[ return states['\${entity}'].attributes.lunar?.凶煞 || ''; ]]]`,
-    };
-  }
-
+  // 高级模板解析引擎 (带缓存)
   _evalTemplate(key, template) {
     if (!template) return "";
     try {
       let fn = this._templateCache.get(key);
       if (!fn) {
-        const code = template.replace(/^\[\[\[\s*|\s*\]\]\]$/g, "").replace(/\$\{entity\}/g, this.config.entity);
+        const code = template
+          .replace(/^\[\[\[\s*|\s*\]\]\]$/g, "")
+          .replace(/\$\{entity\}/g, this.config.entity);
         fn = new Function("states", `try { ${code} } catch(e) { return ""; }`);
         this._templateCache.set(key, fn);
       }
-      return fn(this.hass.states);
-    } catch (e) { return ""; }
+      return fn(this.hass.states) || "";
+    } catch (e) {
+      console.warn(`Template error in [${key}]:`, e);
+      return "";
+    }
   }
 
   render() {
     const entity = this.config.entity;
     const stateObj = this.hass?.states?.[entity];
-    if (!stateObj) return html`<ha-card>实体未找到: ${entity}</ha-card>`;
 
+    if (!stateObj) {
+      return html`<ha-card style="color:red; padding:16px;">未找到实体: ${entity}</ha-card>`;
+    }
+
+    // 合并配置与默认字段
     const fields = this.config.customize && this.config.fields
-        ? { ...LunarInfoCard.defaultFields(), ...this.config.fields }
-        : LunarInfoCard.defaultFields();
+      ? { ...LunarInfoCard.defaultFields(), ...this.config.fields }
+      : LunarInfoCard.defaultFields();
 
     const data = {};
-    for (const key in fields) { data[key] = this._evalTemplate(key, fields[key]); }
+    for (const key in fields) {
+      data[key] = this._evalTemplate(key, fields[key]);
+    }
 
     return html`
       <ha-card>
         <div class="card-container">
-          ${this._section("a", "农历", { state: data["农历"], ganzhi: data["天干地支"], week: data["星期"] }, "a")}
-          ${this._section("b", "五行", data["建除日"], "a")}
-          ${this._section("c", "冲煞", data["冲煞"], "a")}
-          ${this._section("d", "彭祖", html`${data["彭祖干"]}<br>${data["彭祖支"]}`, "a")}
-          ${this._section("e", "喜神", data["喜神"], "b")}
-          ${this._section("f", "福神", data["福神"], "b")}
-          ${this._section("g", "财神", data["财神"], "b")}
-          ${this._section("h", null, data["宜"], "c", false, "宜", "green")}
-          ${this._section("i", null, data["忌"], "c", false, "忌", "red")}
-          ${this._section("j", "吉神", data["吉神"], "c", true)}
-          ${this._section("k", "凶煞", data["凶煞"], "c", true)}
+          <!-- Area: 左侧核心农历 -->
+          <div class="section-lunar">
+            <div class="name">农历${data["农历"]}</div>
+            <div class="label">${data["天干地支"]} ${data["星期"]}</div>
+          </div>
+
+          <!-- Area: 顶部三行信息 -->
+          ${this._renderCell("wuxing", "layout-row", "五行", data["建除日"])}
+          ${this._renderCell("chongsha", "layout-row", "冲煞", data["冲煞"])}
+          ${this._renderCell("pengzu", "layout-row", "彭祖", html`${data["彭祖干"]}<br>${data["彭祖支"]}`)}
+
+          <!-- Area: 三个方位神 -->
+          ${this._renderCell("xishen", "layout-stack", "喜神", data["喜神"])}
+          ${this._renderCell("fushen", "layout-stack", "福神", data["福神"])}
+          ${this._renderCell("caishen", "layout-stack", "财神", data["财神"])}
+
+          <!-- Area: 宜忌吉凶 (支持圆圈和换行) -->
+          ${this._renderCircleCell("yi", "宜", data["宜"], "bg-green")}
+          ${this._renderCircleCell("ji", "忌", data["忌"], "bg-red")}
+          ${this._renderCell("jishen", "layout-bar", "吉神", data["吉神"], true)}
+          ${this._renderCell("xiongsha", "layout-bar", "凶煞", data["凶煞"], true)}
         </div>
       </ha-card>
     `;
   }
 
-  _section(area, name, value, layout = "a", bold = false, circle = null, circleColor = null) {
-    const clsMap = { a: "grid-a", b: "grid-b", c: "grid-c" };
-    const cls = clsMap[layout] || "grid-a";
-    
-    // 布局 c (底部四行) 强制使用 label-block 以支持多行
-    const labelCls = (layout === "c") ? "label-block" : "label";
-
-    if (area === "a" && name === "农历") {
-      return html`
-        <div class="lunar" style="grid-area:${area};">
-          <div class="name">农历${value?.state || ""}</div>
-          <div class="label">${value?.ganzhi || ""} ${value?.week || ""}</div>
-        </div>`;
-    }
-
+  // 渲染函数：通用单元格
+  _renderCell(area, layout, name, value, canWrap = false) {
     return html`
-      <div class="${cls}" style="grid-area:${area};">
-        ${circle ? html`<div class="circle ${circleColor}">${circle}</div>` 
-                 : html`<div class="name" style="${bold ? 'font-weight:bold' : ''}">${name}</div>`}
-        <div class="${labelCls}" title="${typeof value === 'string' ? value : ''}">
-          ${value || ""}
+      <div class="cell ${layout}" style="grid-area: ${area};">
+        <div class="title">${name}</div>
+        <div class="${canWrap ? 'content-wrap' : 'content-single'}" title="${typeof value === 'string' ? value : ''}">
+          ${value}
         </div>
-      </div>`;
+      </div>
+    `;
   }
 
-  getGridOptions() { return { rows: 8, columns: 12 }; }
-  static getStubConfig() { return { entity: "sensor.tianyuan_nong_li_lunar_calendar" }; }
-  static async getConfigElement() { return document.createElement("lunar-info-card-editor"); }
+  // 渲染函数：宜忌圆圈单元格
+  _renderCircleCell(area, name, value, colorClass) {
+    return html`
+      <div class="cell layout-bar" style="grid-area: ${area};">
+        <div class="circle ${colorClass}">${name}</div>
+        <div class="content-wrap" title="${value}">${value}</div>
+      </div>
+    `;
+  }
+
+  // 默认字段映射逻辑
+  static defaultFields() {
+    return {
+      农历: `[[[ return states['\${entity}'].state ]]]`,
+      天干地支: `[[[ return states['\${entity}'].attributes.天干地支 || ''; ]]]`,
+      星期: `[[[ return states['\${entity}'].attributes.星期 || ''; ]]]`,
+      建除日: `[[[ return states['\${entity}'].attributes.建除日 || ''; ]]]`,
+      冲煞: `[[[ return states['\${entity}'].attributes.冲煞 || ''; ]]]`,
+      彭祖干: `[[[ return states['\${entity}'].attributes.彭祖干 || ''; ]]]`,
+      彭祖支: `[[[ return states['\${entity}'].attributes.彭祖支 || ''; ]]]`,
+      喜神: `[[[ return states['\${entity}'].attributes.吉神方位?.喜神 || ''; ]]]`,
+      福神: `[[[ return states['\${entity}'].attributes.吉神方位?.福神 || ''; ]]]`,
+      财神: `[[[ return states['\${entity}'].attributes.吉神方位?.财神 || ''; ]]]`,
+      宜: `[[[ return states['\${entity}'].attributes.宜 || ''; ]]]`,
+      忌: `[[[ return states['\${entity}'].attributes.忌 || ''; ]]]`,
+      吉神: `[[[ return states['\${entity}'].attributes.吉神 || ''; ]]]`,
+      凶煞: `[[[ return states['\${entity}'].attributes.凶煞 || ''; ]]]`,
+    };
+  }
+
+  setConfig(config) {
+    if (!config.entity) throw new Error("请设置 entity 实体 ID");
+    this.config = { ...config };
+    this._templateCache.clear();
+  }
+
+getGridOptions() { return { rows: 8, columns: 9 }; }
+
+  static getStubConfig() {
+    return { entity: "sensor.tianyuan_nong_li_lunar_calendar" };
+  }
+
+  static async getConfigElement() {
+    return document.createElement("lunar-info-card-editor");
+  }
 }
 
 customElements.define("lunar-info-card", LunarInfoCard);
@@ -291,7 +359,7 @@ class LunarInfoCardEditor extends LitElement {
         .data=${this._config}
         .schema=${schema}
         .computeLabel=${(s) => {
-          const labels = { entity: "选择实体", customize: "开启高级模板自定义" };
+          const labels = { entity: "选择实体", customize: "开启高级模板自定义", fields: "自定义字段" };
           return labels[s.name] || s.name;
         }}
         @value-changed=${this._valueChanged}
@@ -302,6 +370,7 @@ class LunarInfoCardEditor extends LitElement {
 
 customElements.define("lunar-info-card-editor", LunarInfoCardEditor);
 
+// 注册卡片
 window.customCards = window.customCards || [];
 window.customCards.push({
   type: "lunar-info-card",
